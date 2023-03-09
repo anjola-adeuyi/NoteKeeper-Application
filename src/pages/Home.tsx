@@ -1,10 +1,10 @@
-import { Route, Routes } from 'react-router-dom'
-import Header from './components/Header/Header'
-import NoteGrid from './components/NoteGrid/NoteGrid'
-import NotFound from './components/NotFound/NotFound'
-import './App.css';
+import { Route, Routes } from 'react-router-dom';
+import Header from '../components/Header/Header';
+import NoteGrid from '../components/NoteGrid/NoteGrid';
+import NotFound from '../components/NotFound/NotFound';
+import '../App.css';
 
-function App() {
+function Home() {
   return (
     <>
       <Header></Header>
@@ -26,4 +26,4 @@ function App() {
   );
 }
 
-export default App;
+export default Home;
