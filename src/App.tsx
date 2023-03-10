@@ -1,7 +1,7 @@
-import { Route, Routes } from 'react-router-dom'
-import Header from './components/Header/Header'
-import NoteGrid from './components/NoteGrid/NoteGrid'
-import NotFound from './components/NotFound/NotFound'
+import { Route, Routes } from 'react-router-dom';
+import Header from './components/Header/Header';
+import NoteGrid from './components/NoteBoard/NoteBoard';
+import NotFound from './components/NotFound/NotFound';
 import './App.css';
 
 function App() {

@@ -34,7 +34,7 @@ VITE_FIREBASE_APP_ID=your-app-id
 
 4. Start the development server
 
-      npm run dev
+        npm run dev
 
 5. Visit http://localhost:3000 to view the application in your browser.
 

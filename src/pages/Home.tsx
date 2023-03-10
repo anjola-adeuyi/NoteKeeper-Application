@@ -1,7 +1,9 @@
 import { Route, Routes } from 'react-router-dom';
+
 import Header from '../components/Header/Header';
-import NoteGrid from '../components/NoteGrid/NoteGrid';
+import NoteBoard from '../components/NoteBoard/NoteBoard';
 import NotFound from '../components/NotFound/NotFound';
+
 import '../App.css';
 
 function Home() {
@@ -11,11 +13,7 @@ function Home() {
       <Routes>
         <Route
           path="/"
-          element={<NoteGrid />}
-        />
-        <Route
-          path="/notes"
-          element={<NoteGrid />}
+          element={<NoteBoard />}
         />
         <Route
           path="*"
