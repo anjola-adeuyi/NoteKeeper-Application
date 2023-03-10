@@ -30,72 +30,70 @@ const NoteGrid = ({ pinNotesList, setPinNotesList, unPinNotesList, setunPinNotes
 
   console.log('pageCount', pageCount, page, totalNotesCount);
 
-  useEffect(() => {
-    async function fetchNotes() {
-      setIsLoading(true);
-      const notekeeperRef = doc(db, 'notekeeper', NOTE_KEEPER_ID);
-      const notesRef = collection(notekeeperRef, 'notes');
+  async function fetchNotes() {
+    setIsLoading(true);
+    const notekeeperRef = doc(db, 'notekeeper', NOTE_KEEPER_ID);
+    const notesRef = collection(notekeeperRef, 'notes');
 
-      // Get total number of notes
-      const totalNotesQuery = await getDocs(notesRef);
-      const totalNotes = totalNotesQuery.size;
+    // Get total number of notes
+    const totalNotesQuery = await getDocs(notesRef);
+    const totalNotes = totalNotesQuery.size;
 
-      // Update page numbers for each note
-      const updatePromises = totalNotesQuery.docs.map((doc, index) => {
-        const page = Math.ceil((index + 1) / PAGE_SIZE);
-        const updateData: any = {
+    // Update page numbers for each note
+    const updatePromises = totalNotesQuery.docs.map((doc, index) => {
+      const page = Math.ceil((index + 1) / PAGE_SIZE);
+      const updateData: any = {
+        ...doc.data(),
+        page: page,
+      };
+      console.log('updateData', updateData, index);
+      return updateDoc(doc.ref, updateData);
+    });
+    await Promise.all(updatePromises);
+
+    // Query for current page of notes
+    const q = query(
+      notesRef,
+      where('page', '==', page),
+      orderBy('createdAt'),
+      // startAfter((page) * PAGE_SIZE),
+      limit(PAGE_SIZE)
+    );
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const pinned: Note[] = [];
+      const unpinned: Note[] = [];
+
+      const notes = snapshot.docs.map((doc) => {
+        const note = {
+          _id: doc.id,
           ...doc.data(),
-          page: page,
-        };
-        console.log('updateData', updateData, index);
-        return updateDoc(doc.ref, updateData);
+        } as Note;
+        if (note.pin) {
+          pinned.push(note);
+        } else {
+          unpinned.push(note);
+        }
+        return note;
       });
-      await Promise.all(updatePromises);
+      console.log('notes', notes);
 
-      // Query for current page of notes
-      const q = query(
-        notesRef,
-        where('page', '==', page),
-        // orderBy('position'),
-        // startAfter((page) * PAGE_SIZE),
-        limit(PAGE_SIZE)
-      );
-      const unsubscribe = onSnapshot(q, (snapshot) => {
-        const pinned: Note[] = [];
-        const unpinned: Note[] = [];
+      // Update page count based on number of notes
+      const totalPages = Math.ceil(totalNotes / PAGE_SIZE);
+      setTotalNotesCount(totalNotes);
+      setPageCount(totalPages);
+      setPinNotesList(pinned);
+      setunPinNotesList(unpinned);
 
-        const notes = snapshot.docs.map((doc) => {
-          const note = {
-            _id: doc.id,
-            ...doc.data(),
-          } as Note;
-          if (note.pin) {
-            pinned.push(note);
-          } else {
-            unpinned.push(note);
-          }
-          return note;
-        });
-        console.log('notes', notes);
+      setIsLoading(false);
 
-        // Update page count based on number of notes
-        const totalPages = Math.ceil(totalNotes / PAGE_SIZE);
-        setTotalNotesCount(totalNotes);
-        setPageCount(totalPages);
-        setPinNotesList(pinned);
-        setunPinNotesList(unpinned);
+      console.log('pinned', pinned);
+      console.log('unpinned', unpinned);
+      console.log('totalNotes', totalNotes);
+    });
+    return unsubscribe;
+  }
 
-        setIsLoading(false);
-
-        console.log('pinned', pinned);
-        console.log('unpinned', unpinned);
-        console.log('totalNotes', totalNotes);
-      });
-      return unsubscribe;
-
-      
-    }
-
+  useEffect(() => {
     fetchNotes();
   }, [page]);
 
@@ -140,6 +138,9 @@ const NoteGrid = ({ pinNotesList, setPinNotesList, unPinNotesList, setunPinNotes
           swal('Your Note has been deleted!', {
             icon: 'success',
           });
+
+          // Fetch Notes for UI from firebase
+          fetchNotes();
         } catch (e) {
           console.error('Error deleting document: ', e);
           swal('Error deleting Note!', {
