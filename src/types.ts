@@ -1,4 +1,6 @@
-import { LegacyRef } from "react";
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/firestore';
+import { LegacyRef } from 'react';
 
 export interface AddNoteProps {
   handleAddNote: any;
@@ -19,23 +21,23 @@ export interface EditNoteProps {
 }
 
 export interface NoteGridProps {
-  pinNoteList: any;
-  setPinNoteList: any;
-  unPinNoteList: any;
-  setUnPinNoteList: any;
+  pinNotesList: any;
+  setPinNotesList: any;
+  unPinNotesList: any;
+  setunPinNotesList: any;
   handleEdit: any;
 }
 
-export interface PinnedNoteProps {
-  pinNoteList: any;
+export interface PinnedNotesProps {
+  pinNotesList: any;
   handleEdit: any;
   handleCompletebtn: any;
   handleDeletebtn: any;
   page: any;
 }
 
-export interface UnPinnedNoteProps {
-  unPinNoteList: any;
+export interface UnPinnedNotesProps {
+  unPinNotesList: any;
   handleEdit: any;
   handleCompletebtn: any;
   handleDeletebtn: any;
@@ -56,6 +58,8 @@ export type NoteType = {
   time: string;
   title: string;
   position: number;
+  createdAt: firebase.firestore.Timestamp;
+  page?: number
 };
 
 export interface Note {
@@ -67,4 +71,6 @@ export interface Note {
   tag: string;
   time: string;
   title: string;
+  createdAt: firebase.firestore.Timestamp;
+  page?: number;
 }

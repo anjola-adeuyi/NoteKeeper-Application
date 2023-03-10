@@ -14,6 +14,8 @@ const EditNote = ({ id, setShowEditModal, currentTag, currentTitle, currentDesc,
 
   //update Note
   const handleUpdateNote = async (e: any) => {
+    e.preventDefault();
+
     const title = updateTitleRef.current?.value;
     const tag = updatetaglineRef.current?.value;
     const description = updatedescRef.current?.value;
@@ -31,7 +33,6 @@ const EditNote = ({ id, setShowEditModal, currentTag, currentTitle, currentDesc,
     }
 
     setShowEditModal(false);
-    e.preventDefault();
   };
 
   return (

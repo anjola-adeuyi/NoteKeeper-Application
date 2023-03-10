@@ -4,7 +4,7 @@ import { HeroProps } from '../../types';
 const Hero = ({ setShowModal }: HeroProps) => {
   return (
     <div className="sticky top-0 bg-white shadow mb-4 rounded-xl p-2 flex justify-between">
-      <h1 className="text-xl md:text-3xl h-full font-semibold p-3 my-auto">
+      <h1 className="text-base md:text-3xl h-full font-semibold p-3 my-auto">
         "Taking Notes Has Never Been So Fun: Say Goodbye to Boring Journals"
       </h1>
       {/* Note add button */}

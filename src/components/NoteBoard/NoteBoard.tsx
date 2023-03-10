@@ -1,6 +1,8 @@
 import { useRef, useState } from 'react';
 import { addDoc, collection, doc } from 'firebase/firestore';
 import swal from 'sweetalert';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/firestore';
 
 import AddNote from '../NoteModal/AddNote/AddNote';
 import EditNote from '../NoteModal/EditNote/EditNote';
@@ -10,8 +12,8 @@ import { NOTE_KEEPER_ID, INITIAL_NOTE_OBJ } from '../../utils';
 import Hero from '../Hero/Hero';
 
 const NoteBoard = () => {
-  const [pinNoteList, setPinNoteList] = useState(INITIAL_NOTE_OBJ); //store pinned Note
-  const [unPinNoteList, setUnPinNoteList] = useState(INITIAL_NOTE_OBJ); //store unpinned Note
+  const [pinNotesList, setPinNotesList] = useState([]); //store pinned Note
+  const [unPinNotesList, setunPinNotesList] = useState([]); //store unpinned Note
   const [showModal, setShowModal] = useState(false); //open up the input modal
   const [showEditModal, setShowEditModal] = useState(false); //open up edit modal
 
@@ -34,10 +36,16 @@ const NoteBoard = () => {
   console.log('time', { today, time, date });
 
   // New Note add button
-  const handleAddNote = (e: any) => {
+  const handleAddNote = async (e: any) => {
+    e.preventDefault();
+
     const title = titleRef.current?.value;
     const tag = taglineRef.current?.value;
     const description = descRef.current?.value;
+
+    const currentDate = new Date();
+    const formattedDate = currentDate.toLocaleString('en-US', { timeZone: 'UTC' });
+    const createdAt = firebase.firestore.Timestamp.fromDate(new Date(formattedDate));
 
     const newNote = {
       title,
@@ -48,7 +56,10 @@ const NoteBoard = () => {
       complete: false,
       pin: false,
       position: 1,
+      createdAt
     };
+
+    console.log('Adding Note', newNote);
 
     const notekeeperRef = doc(db, 'notekeeper', NOTE_KEEPER_ID);
     const notesRef = collection(notekeeperRef, 'notes');
@@ -65,10 +76,9 @@ const NoteBoard = () => {
       });
 
     setShowModal(false);
-    e.preventDefault();
   };
 
-  const handleEdit = (id: any, tag: any, title: any, desc: any) => {
+  const handleEdit = async (id: any, tag: any, title: any, desc: any) => {
     setUpdateId(id);
     setCurrentTag(tag);
     setCurrentTitle(title);
@@ -110,10 +120,10 @@ const NoteBoard = () => {
         {/* Note Grid section */}
 
         <NoteGrid
-          pinNoteList={pinNoteList}
-          unPinNoteList={unPinNoteList}
-          setPinNoteList={setPinNoteList}
-          setUnPinNoteList={setUnPinNoteList}
+          pinNotesList={pinNotesList}
+          unPinNotesList={unPinNotesList}
+          setPinNotesList={setPinNotesList}
+          setunPinNotesList={setunPinNotesList}
           handleEdit={handleEdit}
         />
       </div>

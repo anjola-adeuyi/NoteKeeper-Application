@@ -1,29 +1,38 @@
 import { useEffect, useState } from 'react';
-import { addDoc, collection, deleteDoc, doc, getDocs, limit, onSnapshot, orderBy, query, startAfter, updateDoc, where } from 'firebase/firestore';
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  limit,
+  onSnapshot,
+  orderBy,
+  query,
+  startAfter,
+  updateDoc,
+  where,
+} from 'firebase/firestore';
 import swal from 'sweetalert';
 
-import PinnedNote from '../Note/PinnedNote';
-import UnPinnedNote from '../Note/UnPinnedNote';
+import PinnedNote from '../Notes/PinnedNotes';
+import UnPinnedNote from '../Notes/UnPinnedNotes';
 import LoadingScreen from '../LoadingScreen/LoadingScreen';
 import { Note, NoteGridProps } from '../../types';
 import { db } from '../../config/firebase';
 import { NOTE_KEEPER_ID, PAGE_SIZE } from '../../utils';
 
-const NoteGrid = ({
-  pinNoteList,
-  setPinNoteList,
-  unPinNoteList,
-  setUnPinNoteList,
-  handleEdit
-}: NoteGridProps) => {
+const NoteGrid = ({ pinNotesList, setPinNotesList, unPinNotesList, setunPinNotesList, handleEdit }: NoteGridProps) => {
   const [pageCount, setPageCount] = useState(0);
   const [totalNotesCount, setTotalNotesCount] = useState(0);
   const [page, setPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
 
   console.log('pageCount', pageCount, page, totalNotesCount);
 
   useEffect(() => {
     async function fetchNotes() {
+      setIsLoading(true);
       const notekeeperRef = doc(db, 'notekeeper', NOTE_KEEPER_ID);
       const notesRef = collection(notekeeperRef, 'notes');
 
@@ -73,14 +82,18 @@ const NoteGrid = ({
         const totalPages = Math.ceil(totalNotes / PAGE_SIZE);
         setTotalNotesCount(totalNotes);
         setPageCount(totalPages);
-        setPinNoteList(pinned);
-        setUnPinNoteList(unpinned);
+        setPinNotesList(pinned);
+        setunPinNotesList(unpinned);
+
+        setIsLoading(false);
 
         console.log('pinned', pinned);
         console.log('unpinned', unpinned);
         console.log('totalNotes', totalNotes);
       });
       return unsubscribe;
+
+      
     }
 
     fetchNotes();
@@ -122,8 +135,8 @@ const NoteGrid = ({
         try {
           await deleteDoc(noteRef);
           console.log('Document deleted with ID: ', id);
-          const remainingNotes = unPinNoteList.filter((Note: any) => Note._id !== id);
-          setUnPinNoteList(remainingNotes);
+          const remainingNotes = unPinNotesList.filter((Note: any) => Note._id !== id);
+          setunPinNotesList(remainingNotes);
           swal('Your Note has been deleted!', {
             icon: 'success',
           });
@@ -139,16 +152,22 @@ const NoteGrid = ({
     });
   };
 
-  if (!pinNoteList?.length && !unPinNoteList?.length) {
-    return <LoadingScreen />;
+  if (isLoading || (!pinNotesList?.length && !unPinNotesList?.length)) {
+    return (
+      <div className='mt-40'>
+        <LoadingScreen />
+      </div>
+    );
   }
+
+  console.log('pinNotesList', pinNotesList);
 
   return (
     <div>
       {/* Pinned Note List */}
-      {pinNoteList?.length ? (
+      {pinNotesList?.length ? (
         <PinnedNote
-          pinNoteList={pinNoteList}
+          pinNotesList={pinNotesList}
           handleEdit={handleEdit}
           handleCompletebtn={handleCompletebtn}
           handleDeletebtn={handleDeletebtn}
@@ -159,9 +178,9 @@ const NoteGrid = ({
       )}
 
       {/* unpinned Note list */}
-      {unPinNoteList?.length ? (
+      {unPinNotesList?.length ? (
         <UnPinnedNote
-          unPinNoteList={unPinNoteList}
+          unPinNotesList={unPinNotesList}
           handleEdit={handleEdit}
           handleCompletebtn={handleCompletebtn}
           handleDeletebtn={handleDeletebtn}
