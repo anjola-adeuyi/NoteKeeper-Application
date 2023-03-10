@@ -12,8 +12,8 @@ const EditNote = ({ id, setShowEditModal, currentTag, currentTitle, currentDesc,
   const updatetaglineRef = useRef<HTMLInputElement>(null);
   const updatedescRef = useRef<HTMLTextAreaElement>(null);
 
-  //update task
-  const handleUpdateTask = async (e: any) => {
+  //update Note
+  const handleUpdateNote = async (e: any) => {
     const title = updateTitleRef.current?.value;
     const tag = updatetaglineRef.current?.value;
     const description = updatedescRef.current?.value;
@@ -22,12 +22,12 @@ const EditNote = ({ id, setShowEditModal, currentTag, currentTitle, currentDesc,
     const noteRef = doc(db, 'notekeeper', NOTE_KEEPER_ID, 'notes', id);
     try {
       await updateDoc(noteRef, updateData);
-      console.log('Task Updated!');
-      swal('Task Updated!', 'Your Task is updated successfully', 'success');
+      console.log('Note Updated!');
+      swal('Note Updated!', 'Your Note is updated successfully', 'success');
       e.target.reset();
     } catch (e) {
-      console.error('Error updating task: ', e);
-      swal('Task Update Error!', 'An error occurred during the update operation', 'error');
+      console.error('Error updating Note: ', e);
+      swal('Note Update Error!', 'An error occurred during the update operation', 'error');
     }
 
     setShowEditModal(false);
@@ -40,34 +40,34 @@ const EditNote = ({ id, setShowEditModal, currentTag, currentTitle, currentDesc,
         <div className="relative w-auto my-6 mx-auto max-w-3xl">
           {/*content*/}
           <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-            <form onSubmit={handleUpdateTask}>
+            <form onSubmit={handleUpdateNote}>
               {/*header*/}
               <div className="p-5 border-b border-solid border-slate-200 rounded-t">
                 <label
-                  htmlFor="task-title"
+                  htmlFor="Note-title"
                   className="form-label text-2xl font-semibold mb-2 text-gray-700"
                 >
-                  Task Title{' '}
+                  Note Title{' '}
                 </label>
                 <input
-                  id="task-title"
+                  id="Note-title"
                   ref={updateTitleRef}
                   defaultValue={currentTitle}
                   type="text"
-                  placeholder="Add your task title"
+                  placeholder="Add your Note title"
                   className="text-2xl font-semibold px-3 py-3 placeholder-slate-300 text-slate-600 relative bg-white rounded border-0 shadow outline-none focus:outline-none focus:ring w-full"
                 />
               </div>
-              {/* Task tagline section*/}
+              {/* Note tagline section*/}
               <div className="p-5 border-b border-solid border-slate-200 rounded-t">
                 <label
-                  htmlFor="task-title"
+                  htmlFor="Note-title"
                   className="form-label text-2xl font-semibold mb-2 text-gray-700"
                 >
-                  Task Tagline
+                  Note Tagline
                 </label>
                 <input
-                  id="task-tagline"
+                  id="Note-tagline"
                   type="text"
                   ref={updatetaglineRef}
                   defaultValue={currentTag}
@@ -75,22 +75,22 @@ const EditNote = ({ id, setShowEditModal, currentTag, currentTitle, currentDesc,
                   className="text-xl font-semibold px-3 py-3 placeholder-slate-300 text-slate-600 relative bg-white rounded border-0 shadow outline-none focus:outline-none focus:ring w-full"
                 />
               </div>
-              {/*Task description section*/}
+              {/*Note description section*/}
               <div className="relative p-6 flex-auto">
                 <label
-                  htmlFor="task-description"
+                  htmlFor="Note-description"
                   className="form-label text-lg font-semibold mb-2 text-gray-700"
                 >
-                  Task Description{' '}
+                  Note Description{' '}
                 </label>
 
                 <textarea
                   ref={updatedescRef}
                   defaultValue={currentDesc}
                   className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-purple-600 focus:outline-none "
-                  id="task-description"
+                  id="Note-description"
                   rows={4}
-                  placeholder="Write your task details here"
+                  placeholder="Write your Note details here"
                 ></textarea>
               </div>
               {/*Modal button section*/}

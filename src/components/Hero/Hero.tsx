@@ -7,7 +7,7 @@ const Hero = ({ setShowModal }: HeroProps) => {
       <h1 className="text-xl md:text-3xl h-full font-semibold p-3 my-auto">
         "Taking Notes Has Never Been So Fun: Say Goodbye to Boring Journals"
       </h1>
-      {/* task add button */}
+      {/* Note add button */}
       <button
         className="hover:bg-purple-100 text-purple-600 rounded-full font-bold uppercase text-sm px-4 py-2 shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
         type="button"
@@ -18,7 +18,7 @@ const Hero = ({ setShowModal }: HeroProps) => {
           src={addImg}
           alt="+"
         />
-        Add Task
+        Add Note
       </button>
     </div>
   );

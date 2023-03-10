@@ -1,40 +1,40 @@
 import { AddNoteProps } from '../../../types';
 
-const AddNote = ({ handleAddTask, titleRef, taglineRef, descRef, setShowModal }: AddNoteProps) => {
+const AddNote = ({ handleAddNote, titleRef, taglineRef, descRef, setShowModal }: AddNoteProps) => {
   return (
     <div>
       <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
         <div className="relative w-auto my-6 mx-auto max-w-4xl">
           {/*content*/}
           <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-            <form onSubmit={handleAddTask}>
+            <form onSubmit={handleAddNote}>
               {/*header*/}
               <div className="p-5 border-b border-solid border-slate-200 rounded-t">
                 <label
-                  htmlFor="task-title"
+                  htmlFor="Note-title"
                   className="form-label text-2xl font-semibold mb-2 text-gray-700"
                 >
-                  Task Title{' '}
+                  Note Title{' '}
                 </label>
                 <input
-                  id="task-title"
+                  id="Note-title"
                   required
                   type="text"
                   ref={titleRef}
-                  placeholder="Add a task title"
+                  placeholder="Add a Note title"
                   className="text-2xl font-semibold px-3 py-3 placeholder-slate-300 text-slate-600 relative bg-white rounded border-0 shadow outline-none focus:outline-none focus:ring w-full"
                 />
               </div>
-              {/* Task tagline section*/}
+              {/* Note tagline section*/}
               <div className="p-5 border-b border-solid border-slate-200 rounded-t">
                 <label
-                  htmlFor="task-title"
+                  htmlFor="Note-title"
                   className="form-label text-2xl font-semibold mb-2 text-gray-700"
                 >
-                  Task Tagline{' '}
+                  Note Tagline{' '}
                 </label>
                 <input
-                  id="task-tagline"
+                  id="Note-tagline"
                   required
                   type="text"
                   ref={taglineRef}
@@ -42,22 +42,22 @@ const AddNote = ({ handleAddTask, titleRef, taglineRef, descRef, setShowModal }:
                   className="text-xl font-semibold px-3 py-3 placeholder-slate-300 text-slate-600 relative bg-white rounded border-0 shadow outline-none focus:outline-none focus:ring w-full"
                 />
               </div>
-              {/*Task description section*/}
+              {/*Note description section*/}
               <div className="relative p-6 flex-auto">
                 <label
-                  htmlFor="task-description"
+                  htmlFor="Note-description"
                   className="form-label text-lg font-semibold mb-2 text-gray-700"
                 >
-                  Task Description{' '}
+                  Note Description{' '}
                 </label>
 
                 <textarea
                   required
                   ref={descRef}
                   className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-purple-600 focus:outline-none "
-                  id="task-description"
+                  id="Note-description"
                   rows={4}
-                  placeholder="Write your task details here"
+                  placeholder="Write your Note details here"
                 ></textarea>
               </div>
 

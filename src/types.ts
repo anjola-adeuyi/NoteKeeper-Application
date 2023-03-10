@@ -1,7 +1,7 @@
 import { LegacyRef } from "react";
 
 export interface AddNoteProps {
-  handleAddTask: any;
+  handleAddNote: any;
   titleRef: LegacyRef<HTMLInputElement> | undefined;
   taglineRef: LegacyRef<HTMLInputElement> | undefined;
   descRef: LegacyRef<HTMLTextAreaElement> | undefined;
@@ -19,15 +19,15 @@ export interface EditNoteProps {
 }
 
 export interface NoteGridProps {
-  pinTaskList: any;
-  setPinTaskList: any;
-  unPinTaskList: any;
-  setUnPinTaskList: any;
+  pinNoteList: any;
+  setPinNoteList: any;
+  unPinNoteList: any;
+  setUnPinNoteList: any;
   handleEdit: any;
 }
 
 export interface PinnedNoteProps {
-  pinTaskList: any;
+  pinNoteList: any;
   handleEdit: any;
   handleCompletebtn: any;
   handleDeletebtn: any;
@@ -35,7 +35,7 @@ export interface PinnedNoteProps {
 }
 
 export interface UnPinnedNoteProps {
-  unPinTaskList: any;
+  unPinNoteList: any;
   handleEdit: any;
   handleCompletebtn: any;
   handleDeletebtn: any;

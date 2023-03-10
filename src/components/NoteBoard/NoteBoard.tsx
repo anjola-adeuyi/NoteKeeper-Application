@@ -10,8 +10,8 @@ import { NOTE_KEEPER_ID, INITIAL_NOTE_OBJ } from '../../utils';
 import Hero from '../Hero/Hero';
 
 const NoteBoard = () => {
-  const [pinTaskList, setPinTaskList] = useState(INITIAL_NOTE_OBJ); //store pinned task
-  const [unPinTaskList, setUnPinTaskList] = useState(INITIAL_NOTE_OBJ); //store unpinned task
+  const [pinNoteList, setPinNoteList] = useState(INITIAL_NOTE_OBJ); //store pinned Note
+  const [unPinNoteList, setUnPinNoteList] = useState(INITIAL_NOTE_OBJ); //store unpinned Note
   const [showModal, setShowModal] = useState(false); //open up the input modal
   const [showEditModal, setShowEditModal] = useState(false); //open up edit modal
 
@@ -20,7 +20,7 @@ const NoteBoard = () => {
   const taglineRef = useRef<HTMLInputElement>(null);
   const descRef = useRef<HTMLTextAreaElement>(null);
 
-  //current select task data
+  //current select Note data
   const [updateId, setUpdateId] = useState([]);
   const [currentTag, setCurrentTag] = useState([]);
   const [currentTitle, setCurrentTitle] = useState([]);
@@ -33,7 +33,7 @@ const NoteBoard = () => {
 
   console.log('time', { today, time, date });
 
-  // New task add button
+  // New Note add button
   const handleAddNote = (e: any) => {
     const title = titleRef.current?.value;
     const tag = taglineRef.current?.value;
@@ -56,12 +56,12 @@ const NoteBoard = () => {
     addDoc(notesRef, newNote)
       .then((docRef) => {
         console.log('Document written with ID: ', docRef.id);
-        swal('New Task Added!', 'Your Task is added successfully', 'success');
+        swal('New Note Added!', 'Your Note is added successfully', 'success');
         e.target.reset();
       })
       .catch((error) => {
         console.error('Error adding document: ', error);
-        swal('Task Adding Error!', 'An error occured during the adding operation', 'error');
+        swal('Note Adding Error!', 'An error occured during the adding operation', 'error');
       });
 
     setShowModal(false);
@@ -84,7 +84,7 @@ const NoteBoard = () => {
         {showModal ? (
           <>
             <AddNote
-              handleAddTask={handleAddNote}
+              handleAddNote={handleAddNote}
               titleRef={titleRef}
               descRef={descRef}
               taglineRef={taglineRef}
@@ -110,10 +110,10 @@ const NoteBoard = () => {
         {/* Note Grid section */}
 
         <NoteGrid
-          pinTaskList={pinTaskList}
-          unPinTaskList={unPinTaskList}
-          setPinTaskList={setPinTaskList}
-          setUnPinTaskList={setUnPinTaskList}
+          pinNoteList={pinNoteList}
+          unPinNoteList={unPinNoteList}
+          setPinNoteList={setPinNoteList}
+          setUnPinNoteList={setUnPinNoteList}
           handleEdit={handleEdit}
         />
       </div>

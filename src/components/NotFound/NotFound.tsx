@@ -20,13 +20,13 @@ const NotFound = () => {
           <p className="text-gray-500 text-sm">Please check the URL in the address bar and try again.</p>
         </div>
       </div>
-      <br />
-      <button className="rounded-lg bg-purple-600 p-2 text-white w-80">
+
+      <button className="text-center my-16 text-xl lg:text-2xl text-purple-700">
         <Link
-          to="/"
-          className="text-white"
+          to={'/'}
+          className="block"
         >
-          Go Back Notes
+          <span className="bg-purple-300 shadow rounded-2xl p-4">Go Back To Notes</span>
         </Link>
       </button>
     </div>

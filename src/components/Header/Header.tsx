@@ -7,7 +7,7 @@ const Header = () => {
   const navigation = [{ name: 'Note Keeper', href: '/' }];
   return (
     <div className="relative bg-white overflow-hidden shadow py-8">
-      <div className="mx-auto h-32 container">
+      <div className="mx-auto h-20 container">
         <div className="relative z-10 pb-2 bg-white lg:max-w-2xl lg:w-full xl:pb-2">
           <svg
             className="hidden lg:block absolute right-0 inset-y-0 h-full w-48 text-white transform translate-x-1/2"
@@ -32,7 +32,7 @@ const Header = () => {
                       <img
                         alt="Workflow"
                         src="https://cdn-icons-png.flaticon.com/512/752/752326.png"
-                        className="h-24 w-24"
+                        className="h-20 w-20"
                         // src="https://img.icons8.com/exxternal-flat-wichaiwi/64/000000/external-activities-business-model-canvas-flat-wichaiwi.png"
                       />
                     </Link>

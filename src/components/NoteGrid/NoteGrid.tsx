@@ -10,10 +10,10 @@ import { db } from '../../config/firebase';
 import { NOTE_KEEPER_ID, PAGE_SIZE } from '../../utils';
 
 const NoteGrid = ({
-  pinTaskList,
-  setPinTaskList,
-  unPinTaskList,
-  setUnPinTaskList,
+  pinNoteList,
+  setPinNoteList,
+  unPinNoteList,
+  setUnPinNoteList,
   handleEdit
 }: NoteGridProps) => {
   const [pageCount, setPageCount] = useState(0);
@@ -73,8 +73,8 @@ const NoteGrid = ({
         const totalPages = Math.ceil(totalNotes / PAGE_SIZE);
         setTotalNotesCount(totalNotes);
         setPageCount(totalPages);
-        setPinTaskList(pinned);
-        setUnPinTaskList(unpinned);
+        setPinNoteList(pinned);
+        setUnPinNoteList(unpinned);
 
         console.log('pinned', pinned);
         console.log('unpinned', unpinned);
@@ -89,28 +89,28 @@ const NoteGrid = ({
   //complete button event
   const handleCompletebtn = async (id: any) => {
     const noteRef = doc(db, 'notekeeper', NOTE_KEEPER_ID, 'notes', id);
-    const task = document.getElementById(id) as HTMLElement;
-    task.classList.add('complete-text');
+    const Note = document.getElementById(id) as HTMLElement;
+    Note.classList.add('complete-text');
 
     console.log('completing..', id);
 
     try {
       await updateDoc(noteRef, { complete: true });
-      console.log('Task complete!');
-      swal('Task complete!', 'Your task is complete successfully', 'success');
+      console.log('Note complete!');
+      swal('Note complete!', 'Your Note is complete successfully', 'success');
     } catch (e) {
-      console.error('Error completing task: ', e);
-      swal('Task complete Error!', 'An error occured during the complete operation', 'error');
+      console.error('Error completing Note: ', e);
+      swal('Note complete Error!', 'An error occured during the complete operation', 'error');
     }
   };
 
   //delete button event
   const handleDeletebtn = async (id: string) => {
-    console.log('task._id', id);
+    console.log('Note._id', id);
     const noteRef = doc(db, 'notekeeper', NOTE_KEEPER_ID, 'notes', id);
     swal({
       title: 'Are you sure?',
-      text: 'Once deleted, you will not be able to recover this task details!',
+      text: 'Once deleted, you will not be able to recover this Note details!',
       icon: 'warning',
       buttons: {
         cancel: true,
@@ -122,33 +122,33 @@ const NoteGrid = ({
         try {
           await deleteDoc(noteRef);
           console.log('Document deleted with ID: ', id);
-          const remainingTasks = unPinTaskList.filter((task: any) => task._id !== id);
-          setUnPinTaskList(remainingTasks);
-          swal('Your task has been deleted!', {
+          const remainingNotes = unPinNoteList.filter((Note: any) => Note._id !== id);
+          setUnPinNoteList(remainingNotes);
+          swal('Your Note has been deleted!', {
             icon: 'success',
           });
         } catch (e) {
           console.error('Error deleting document: ', e);
-          swal('Error deleting task!', {
+          swal('Error deleting Note!', {
             icon: 'error',
           });
         }
       } else {
-        swal('Your task is safe!');
+        swal('Your Note is safe!');
       }
     });
   };
 
-  if (!pinTaskList?.length && !unPinTaskList?.length) {
+  if (!pinNoteList?.length && !unPinNoteList?.length) {
     return <LoadingScreen />;
   }
 
   return (
     <div>
-      {/* Pinned Task List */}
-      {pinTaskList?.length ? (
+      {/* Pinned Note List */}
+      {pinNoteList?.length ? (
         <PinnedNote
-          pinTaskList={pinTaskList}
+          pinNoteList={pinNoteList}
           handleEdit={handleEdit}
           handleCompletebtn={handleCompletebtn}
           handleDeletebtn={handleDeletebtn}
@@ -158,23 +158,17 @@ const NoteGrid = ({
         <></>
       )}
 
-      {/* unpinned task list */}
-      {unPinTaskList?.length ? (
+      {/* unpinned Note list */}
+      {unPinNoteList?.length ? (
         <UnPinnedNote
-          unPinTaskList={unPinTaskList}
+          unPinNoteList={unPinNoteList}
           handleEdit={handleEdit}
           handleCompletebtn={handleCompletebtn}
           handleDeletebtn={handleDeletebtn}
           page={page}
         />
       ) : (
-        <>
-          <h1
-            className="text-center my-16 text-xl lg:text-2xl text-purple-700"
-          >
-            <span className="bg-purple-300 shadow rounded-2xl p-4">Task Bar is Empty</span>
-          </h1>
-        </>
+        <></>
       )}
 
       {/* pagination */}
