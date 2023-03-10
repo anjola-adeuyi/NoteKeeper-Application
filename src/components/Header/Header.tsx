@@ -20,7 +20,7 @@ const Header = () => {
           </svg>
 
           <Popover>
-            <div className="relative pt-6 px-5">
+            <div className="relative md:pt-6 px-5">
               <nav
                 className="relative flex items-center justify-between sm:h-10 lg:justify-start"
                 aria-label="Global"
@@ -37,7 +37,7 @@ const Header = () => {
                       />
                     </Link>
                     <div className="-mr-2 flex items-center md:hidden">
-                      <Popover.Button className="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
+                      <Popover.Button className="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-purple-500">
                         <span className="sr-only">Open menu</span>
                         <MenuIcon
                           className="h-10 w-10"
@@ -72,7 +72,7 @@ const Header = () => {
             >
               <Popover.Panel
                 focus
-                className="absolute z-10 top-0 inset-x-0 p-2 transition transform origin-top-right md:hidden"
+                className="absolute z-10 top-0 inset-x-0 -mt-8 transition transform origin-top-right md:hidden"
               >
                 <div className="rounded-lg shadow-md bg-white ring-1 ring-black ring-opacity-5 overflow-hidden">
                   <div className="px-5 pt-4 flex items-center justify-between">
@@ -84,7 +84,7 @@ const Header = () => {
                       />
                     </div>
                     <div className="-mr-2">
-                      <Popover.Button className="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
+                      <Popover.Button className="bg-white rounded-md p-2 mt-7 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-purple-500">
                         <span className="sr-only">Close menu</span>
                         <XIcon
                           className="h-10 w-10"

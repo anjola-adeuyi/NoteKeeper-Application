@@ -22,76 +22,20 @@ import { Note, NoteGridProps } from '../../types';
 import { db } from '../../config/firebase';
 import { NOTE_KEEPER_ID, PAGE_SIZE } from '../../utils';
 
-const NoteGrid = ({ pinNotesList, setPinNotesList, unPinNotesList, setunPinNotesList, handleEdit }: NoteGridProps) => {
-  const [pageCount, setPageCount] = useState(0);
-  const [totalNotesCount, setTotalNotesCount] = useState(0);
-  const [page, setPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
-
-  console.log('pageCount', pageCount, page, totalNotesCount);
-
-  async function fetchNotes() {
-    setIsLoading(true);
-    const notekeeperRef = doc(db, 'notekeeper', NOTE_KEEPER_ID);
-    const notesRef = collection(notekeeperRef, 'notes');
-
-    // Get total number of notes
-    const totalNotesQuery = await getDocs(notesRef);
-    const totalNotes = totalNotesQuery.size;
-
-    // Update page numbers for each note
-    const updatePromises = totalNotesQuery.docs.map((doc, index) => {
-      const page = Math.ceil((index + 1) / PAGE_SIZE);
-      const updateData: any = {
-        ...doc.data(),
-        page: page,
-      };
-      console.log('updateData', updateData, index);
-      return updateDoc(doc.ref, updateData);
-    });
-    await Promise.all(updatePromises);
-
-    // Query for current page of notes
-    const q = query(
-      notesRef,
-      where('page', '==', page),
-      orderBy('createdAt'),
-      // startAfter((page) * PAGE_SIZE),
-      limit(PAGE_SIZE)
-    );
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const pinned: Note[] = [];
-      const unpinned: Note[] = [];
-
-      const notes = snapshot.docs.map((doc) => {
-        const note = {
-          _id: doc.id,
-          ...doc.data(),
-        } as Note;
-        if (note.pin) {
-          pinned.push(note);
-        } else {
-          unpinned.push(note);
-        }
-        return note;
-      });
-      console.log('notes', notes);
-
-      // Update page count based on number of notes
-      const totalPages = Math.ceil(totalNotes / PAGE_SIZE);
-      setTotalNotesCount(totalNotes);
-      setPageCount(totalPages);
-      setPinNotesList(pinned);
-      setunPinNotesList(unpinned);
-
-      setIsLoading(false);
-
-      console.log('pinned', pinned);
-      console.log('unpinned', unpinned);
-      console.log('totalNotes', totalNotes);
-    });
-    return unsubscribe;
-  }
+const NoteGrid = ({
+  fetchNotes,
+  page,
+  isLoading,
+  pageCount,
+  setPage,
+  pinNotesList,
+  setPinNotesList,
+  unPinNotesList,
+  setUnPinNotesList,
+  setShowModal,
+  handleEdit,
+}: NoteGridProps) => {
+  // console.log('pageCount', pageCount, page, totalNotesCount);
 
   useEffect(() => {
     fetchNotes();
@@ -133,8 +77,10 @@ const NoteGrid = ({ pinNotesList, setPinNotesList, unPinNotesList, setunPinNotes
         try {
           await deleteDoc(noteRef);
           console.log('Document deleted with ID: ', id);
-          const remainingNotes = unPinNotesList.filter((Note: any) => Note._id !== id);
-          setunPinNotesList(remainingNotes);
+          const remainingUnPinNotes = unPinNotesList.filter((Note: any) => Note._id !== id);
+          setUnPinNotesList(remainingUnPinNotes);
+          const remainingPinNotes = pinNotesList.filter((Note: any) => Note._id !== id);
+          setPinNotesList(remainingPinNotes);
           swal('Your Note has been deleted!', {
             icon: 'success',
           });
@@ -153,10 +99,23 @@ const NoteGrid = ({ pinNotesList, setPinNotesList, unPinNotesList, setunPinNotes
     });
   };
 
-  if (isLoading || (!pinNotesList?.length && !unPinNotesList?.length)) {
+  if (isLoading) {
     return (
-      <div className='mt-40'>
+      <div className="mt-40">
         <LoadingScreen />
+      </div>
+    );
+  }
+
+  if (!pinNotesList?.length && !unPinNotesList?.length) {
+    return (
+      <div className="text-center mt-40 text-base lg:text-2xl text-purple-700">
+        <button
+          onClick={() => setShowModal(true)}
+          className="bg-purple-300 shadow rounded-lg md:rounded-2xl p-4 hover:shadow-lg"
+        >
+          Notes List Empty - Click on Add Note
+        </button>
       </div>
     );
   }

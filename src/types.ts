@@ -24,8 +24,14 @@ export interface NoteGridProps {
   pinNotesList: any;
   setPinNotesList: any;
   unPinNotesList: any;
-  setunPinNotesList: any;
+  setUnPinNotesList: any;
   handleEdit: any;
+  setShowModal: any;
+  fetchNotes: any;
+  page: any;
+  isLoading: boolean;
+  pageCount: number;
+  setPage: any;
 }
 
 export interface PinnedNotesProps {
@@ -59,7 +65,7 @@ export type NoteType = {
   title: string;
   position: number;
   createdAt: firebase.firestore.Timestamp;
-  page?: number
+  page?: number;
 };
 
 export interface Note {

@@ -2,7 +2,7 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
 import { NoteType } from '../types';
 
-export const PAGE_SIZE = 2;
+export const PAGE_SIZE = 6;
 export const NOTE_KEEPER_ID = 'T7nW6epL4IZNOQzGwodQ';
 
 export const INITIAL_NOTE_OBJ: NoteType[] = [

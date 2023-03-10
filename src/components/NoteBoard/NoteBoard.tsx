@@ -1,5 +1,17 @@
 import { useRef, useState } from 'react';
-import { addDoc, collection, doc } from 'firebase/firestore';
+import {
+  addDoc,
+  collection,
+  doc,
+  getDocs,
+  limit,
+  onSnapshot,
+  orderBy,
+  query,
+  startAfter,
+  updateDoc,
+  where,
+} from 'firebase/firestore';
 import swal from 'sweetalert';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
@@ -8,14 +20,20 @@ import AddNote from '../NoteModal/AddNote/AddNote';
 import EditNote from '../NoteModal/EditNote/EditNote';
 import NoteGrid from '../NoteGrid/NoteGrid';
 import { db } from '../../config/firebase';
-import { NOTE_KEEPER_ID, INITIAL_NOTE_OBJ } from '../../utils';
+import { NOTE_KEEPER_ID, INITIAL_NOTE_OBJ, PAGE_SIZE } from '../../utils';
 import Hero from '../Hero/Hero';
+import { Note } from '../../types';
 
 const NoteBoard = () => {
-  const [pinNotesList, setPinNotesList] = useState([]); //store pinned Note
-  const [unPinNotesList, setunPinNotesList] = useState([]); //store unpinned Note
+  const [pinNotesList, setPinNotesList] = useState<Note[]>([]); //store pinned Note
+  const [unPinNotesList, setUnPinNotesList] = useState<Note[]>([]); //store unpinned Note
   const [showModal, setShowModal] = useState(false); //open up the input modal
   const [showEditModal, setShowEditModal] = useState(false); //open up edit modal
+
+  const [pageCount, setPageCount] = useState(0);
+  const [totalNotesCount, setTotalNotesCount] = useState(0);
+  const [page, setPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
 
   //initial input data
   const titleRef = useRef<HTMLInputElement>(null);
@@ -35,6 +53,70 @@ const NoteBoard = () => {
 
   console.log('time', { today, time, date });
 
+  // Logic to fetch Notes from firebase
+  async function fetchNotes() {
+    setIsLoading(true);
+    const notekeeperRef = doc(db, 'notekeeper', NOTE_KEEPER_ID);
+    const notesRef = collection(notekeeperRef, 'notes');
+
+    // Get total number of notes
+    const totalNotesQuery = await getDocs(notesRef);
+    const totalNotes = totalNotesQuery.size;
+
+    // Update page numbers for each note
+    const updatePromises = totalNotesQuery.docs.map((doc, index) => {
+      const page = Math.ceil((index + 1) / PAGE_SIZE);
+      const updateData: any = {
+        ...doc.data(),
+        page: page,
+      };
+      console.log('updateData', updateData, index);
+      return updateDoc(doc.ref, updateData);
+    });
+    await Promise.allSettled(updatePromises);
+
+    // Query for current page of notes
+    const q = query(
+      notesRef,
+      where('page', '==', page),
+      orderBy('createdAt', 'desc'),
+      // startAfter((page - 1) * PAGE_SIZE),
+      limit(PAGE_SIZE)
+    );
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const pinned: Note[] = [];
+      const unpinned: Note[] = [];
+
+      const notes = snapshot.docs.map((doc) => {
+        const note = {
+          _id: doc.id,
+          ...doc.data(),
+        } as Note;
+        if (note.pin) {
+          pinned.push(note);
+        } else {
+          unpinned.push(note);
+        }
+        return note;
+      });
+      console.log('notes', notes);
+
+      // Update page count based on number of notes
+      const totalPages = Math.ceil(totalNotes / PAGE_SIZE);
+      setTotalNotesCount(totalNotes);
+      setPageCount(totalPages);
+      setPinNotesList(pinned);
+      setUnPinNotesList(unpinned);
+
+      setIsLoading(false);
+
+      console.log('pinned', pinned);
+      console.log('unpinned', unpinned);
+      console.log('totalNotes', totalNotes);
+    });
+    return unsubscribe;
+  }
+
   // New Note add button
   const handleAddNote = async (e: any) => {
     e.preventDefault();
@@ -45,18 +127,20 @@ const NoteBoard = () => {
 
     const currentDate = new Date();
     const formattedDate = currentDate.toLocaleString('en-US', { timeZone: 'UTC' });
-    const createdAt = firebase.firestore.Timestamp.fromDate(new Date(formattedDate));
+    const createdAtOld = firebase.firestore.Timestamp.fromDate(new Date(formattedDate));
+
+    const createdAt = firebase.firestore.Timestamp.now();
+
+    console.log({ createdAtOld, createdAt });
 
     const newNote = {
       title,
       tag,
       description,
-      time,
-      date,
       complete: false,
       pin: false,
       position: 1,
-      createdAt
+      createdAt,
     };
 
     console.log('Adding Note', newNote);
@@ -69,6 +153,9 @@ const NoteBoard = () => {
         console.log('Document written with ID: ', docRef.id);
         swal('New Note Added!', 'Your Note is added successfully', 'success');
         e.target.reset();
+
+        // Fetch Notes for UI from firebase
+        fetchNotes();
       })
       .catch((error) => {
         console.error('Error adding document: ', error);
@@ -123,8 +210,14 @@ const NoteBoard = () => {
           pinNotesList={pinNotesList}
           unPinNotesList={unPinNotesList}
           setPinNotesList={setPinNotesList}
-          setunPinNotesList={setunPinNotesList}
+          setUnPinNotesList={setUnPinNotesList}
           handleEdit={handleEdit}
+          setShowModal={setShowModal}
+          fetchNotes={fetchNotes}
+          page={page}
+          isLoading={isLoading}
+          pageCount={pageCount}
+          setPage={setPage}
         />
       </div>
     </div>
