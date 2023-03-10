@@ -10,6 +10,8 @@ Build a notekeeper application (think Google Keep).
 - Tailwind CSS
 - Vite
 
+[![Notes Cover](./src/assets/notes-cover.png)](https://note-keeper-application.vercel.app/)
+
 ## Installation
 1. Clone the repository
 
@@ -67,3 +69,11 @@ This will create a dist directory containing all the necessary files to deploy t
 **Conclusion**
   -
 The NoteKeeper Application is a simple yet powerful note-taking tool that allows multiple users to add and edit notes without the need for a sign-in process. The application uses React, TypeScript, Firebase, Firestore, Tailwind CSS, and Vite to deliver a smooth user experience.
+
+
+![Notes Cover](./src/assets/notes-cover-pin.png)
+
+**Phone View**
+  -
+
+![Notes Cover](./src/assets/notes-cover-phone.png)
